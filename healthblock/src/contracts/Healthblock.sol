@@ -3,25 +3,29 @@ pragma solidity ^0.5.16;
 contract Healthblock {
   address public owner;
   uint public number=0;
-  mapping (address => doctor) private doctors;// doctor and list of patient profile he can access
-  mapping (address => patient) private patients;
-  mapping (bytes32 => report) private hashToFile; //filehash to file info
+  uint report_count=0;
+  mapping (address => doctor)  public doctors;
+  mapping (address => patient) public patients;
+  mapping (string => report) public reports; 
+  mapping (uint=>report) reportlist;
   string public name = "Healthblock";
   struct report {
-      string report_name;
-      string report_type;
+      uint id;
+      string name;
       string report_hash;
       address owner;
+      address[] doctors_assigned;
     }
   
   struct patient {
       string name;
       address id;
-      bytes32[] reports;
+      string[] reports;
   }
   struct doctor {
       string name;
       address id;
+
   }
   constructor() public {
     owner = msg.sender;
@@ -37,7 +41,7 @@ contract Healthblock {
     if (member==0){
         patient memory p = patients[msg.sender];
         require(!(p.id > address(0x0)));
-        patients[msg.sender] = patient({name:_name,id:msg.sender,reports:new bytes32[](0)});   
+        patients[msg.sender] = patient({name:_name,id:msg.sender,reports:new string[](0)});   
         return (_name,"patient");
         }
     else if (member==1){
@@ -54,5 +58,11 @@ contract Healthblock {
           return (d.name, 'doctor');
       else
           return (' ', '');
-  }  
-}
+  }
+  function uploadReport(string memory _name,string memory _reporthash) public {
+    reports[_reporthash ]=report({id:report_count,name:_name,report_hash:_reporthash,owner:msg.sender,doctors_assigned:new address[](0)});
+    patients[msg.sender].reports.push(_reporthash);
+    report_count++;
+  }
+  
+} 

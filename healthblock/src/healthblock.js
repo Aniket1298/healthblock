@@ -1,9 +1,25 @@
+  
 import Web3 from 'web3'
 import Healthblock from './build/contracts/Healthblock.json'
 export default class web3obj{
     constructor(){
         this.account=''
         this.contract=null
+        this.user=null
+    
+      }
+      async upload(title,hash){
+        await this.contract.methods.uploadReport(title,hash).send({from:this.account})
+      }
+
+    async register(name,role){
+      if (role==="Doctor"){
+        await this.contract.methods.register(name,1).send({from:this.account})
+
+    }
+    else{
+        await this.contract.methods.register(name,0).send({from:this.account})
+    }
     }
     async loadWeb3() {
         if (window.ethereum) {
@@ -23,19 +39,23 @@ export default class web3obj{
         // Load account
         const accounts = await web3.eth.getAccounts()
         this.account=accounts[0]
+        console.log("ACCOUNT HERE  IS",accounts[0],this.account)
         const networkId = await web3.eth.net.getId()
         const networkData = Healthblock.networks[networkId]
+        
+        console.log(networkId)
+        console.log(networkData)
         if(networkData) {
           const contract = new web3.eth.Contract(Healthblock.abi, networkData.address)
           this.contract = contract
           console.log("Contract",contract.methods)
           const hello = await contract.methods.name().call()
           console.log("Address",this.account)
-          //await contract.methods.register("doctor6",1).send({from:this.account})
+          //await contract.methods.register("doctor5",1).send({from:this.account})
           const data = await contract.methods.getProfile(this.account).call()
           console.log("DATA",data)
           var user=null
-          if (data[0]!=""){
+          if (data[0]!=" "){
               user={"name":data[0],"role":data[1]}
           }
           this.user=user
