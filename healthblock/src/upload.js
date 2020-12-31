@@ -11,16 +11,33 @@ const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' 
 class UploadPage extends Component{
     constructor(props){
         super(props)
-        console.log(this.props)
         this.state={
             report_name:null,
             buffer:null,
-            
+            name:null,
+            role:null,
+            account:null,
         }
-        console.log("TESING SOMETHING")
-        console.log(this.props.obj)
+        
         this.uploadReport=this.uploadReport.bind(this)
         this.captureFile = this.captureFile.bind(this)
+        this.setData= this.setData  .bind(this)
+        this.setData()
+    }
+    async setData(){
+      const obj = new web3obj()
+      await obj.loadWeb3()
+      await obj.loadBlockchainData()
+      const contract = obj.contract
+      var account = obj.account
+      this.setState({name:obj.user.name,role:obj.user.role,account:obj.account})
+      const count = await contract.methods.report_count().call()
+      console.log("REPORT COUNT",count)
+      const files = await contract.methods.reportlist(0).call()
+      console.log("FILES and")
+      console.log(files)
+      console.log(files.reports)
+
     }
     captureFile = event => {
         event.preventDefault()
@@ -56,10 +73,14 @@ class UploadPage extends Component{
       console.log("HASH")
       console.log(title,hash)
       await obj.upload(title,hash)
+      this.props.history.push("/")
       }
       render(){
           return(
-          <div className="uploadReport">
+          <div className="uploadReport" style={{marginLeft:"40%",marginTop:"7%", }}>
+            <h3>Address {this.state.account}</h3>
+            <h3>Name  {this.state.name}</h3>
+            <h3>Role {this.state.role}</h3>
               <h5><b>Upload Report  </b></h5>
             <form onSubmit={(event) => {
               event.preventDefault()

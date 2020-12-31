@@ -1,13 +1,15 @@
 pragma solidity ^0.5.16;
+pragma experimental ABIEncoderV2;
 
 contract Healthblock {
   address public owner;
   uint public number=0;
-  uint report_count=0;
+  uint public report_count=0;
   mapping (address => doctor)  public doctors;
   mapping (address => patient) public patients;
   mapping (string => report) public reports; 
-  mapping (uint=>report) reportlist;
+  mapping (uint=>report) public reportlist;
+  mapping (address =>report) public doctoReport;
   string public name = "Healthblock";
   struct report {
       uint id;
@@ -25,7 +27,6 @@ contract Healthblock {
   struct doctor {
       string name;
       address id;
-
   }
   constructor() public {
     owner = msg.sender;
@@ -33,9 +34,6 @@ contract Healthblock {
   function add() public returns(uint){
       number ++;
       return(number);
-  }
-  function hello(string memory _test) public returns(string memory){
-      return (_test);   
   }
   function register(string memory _name, uint8 member) public returns(string memory,string memory){
     if (member==0){
@@ -49,7 +47,7 @@ contract Healthblock {
       return (_name,"doctor");
         }
     }
-  function getProfile(address _user) public  returns(string memory, string memory){
+  function getProfile(address _user) public view  returns(string memory, string memory){
       patient memory p = patients[_user];
       doctor memory d = doctors[_user];
       if(p.id > address(0x0))
@@ -62,7 +60,13 @@ contract Healthblock {
   function uploadReport(string memory _name,string memory _reporthash) public {
     reports[_reporthash ]=report({id:report_count,name:_name,report_hash:_reporthash,owner:msg.sender,doctors_assigned:new address[](0)});
     patients[msg.sender].reports.push(_reporthash);
+    reportlist[report_count]=reports[_reporthash];
     report_count++;
   }
-  
+  function getReports() public view returns (string [] memory){
+    return patients[msg.sender].reports;
+  }
+  function grantAccess(uint _id,address  _docAddress) public {
+    reportlist[_id].doctors_assigned.push(_docAddress);
+  }
 } 
