@@ -4,7 +4,7 @@
 ### Prerequites
 ### 1.Install ganache
 ### 2.setup a new project and add truffle-config.js to it.
-### 3.setup metamask andd account from the free accounts given in ganache.
+### 3.setup metamask and add account from the free accounts given in ganache.
 ### 4.add port 7545 in truffle-config.
 
 ``` 
@@ -16,3 +16,7 @@ truffle migrate --reset
 cd ..
 npm start
 ```
+### Currently Supporing Features
+### Role Based Authentication i.e. Doctor and Patient
+### Uploading of Report to ipfs and storing it's hash in blockchain
+### Rendering Uploaded Reports of patient
