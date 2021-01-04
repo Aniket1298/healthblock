@@ -16,7 +16,7 @@ truffle migrate --reset
 cd ..
 npm start
 ```
-### Currently Supporing Features
+### Currently Supporting Features
 ### Role Based Authentication i.e. Doctor and Patient
 ### Uploading of Report to ipfs and storing it's hash in blockchain
 ### Rendering Uploaded Reports of patient
