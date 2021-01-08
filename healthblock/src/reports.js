@@ -16,6 +16,18 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import CenteredGrid from './components'
 
+function ReportCount(props){
+  if (props.count==0){
+    return <h1>No Reports</h1>
+  }
+  else if (props.count==1){
+    return <h1>1 Report </h1>
+  }
+  else{
+    return <h1>{props.count} {" "}Reports</h1>
+  }
+}
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -50,6 +62,7 @@ class ReportsPage extends Component{
             role:null,
             account:null,
             hashes:[],
+            report_count:0,
         }
         this.getData=this.getData.bind(this);
         this.getData()
@@ -61,6 +74,8 @@ class ReportsPage extends Component{
       const contract = obj.contract
       this.setState({name:obj.user.name,role:obj.user.role,account:obj.account})
       const report_count =  await contract.methods.report_count().call()
+      this.setState({name:obj.user.name,role:obj.user.role,account:obj.account,report_count:report_count})
+      
       console.log("REPORTS",report_count)
       var file = null
       var arr=[]
@@ -107,9 +122,11 @@ class ReportsPage extends Component{
                   </AppBar>
                 </div>
                 <div className="Header">
+                      
                       <h1>
-                        {this.state.name},your medical reports
+                        {this.state.name},Your medical reports
                       </h1>
+                      <ReportCount count ={this.state.report_count}/>
                       &nbsp;
                 </div>
                 <div style={{ marginLeft:"34%"}}>

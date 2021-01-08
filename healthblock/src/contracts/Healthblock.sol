@@ -18,7 +18,6 @@ contract Healthblock {
       address owner;
       address[] doctors_assigned;
     }
-  
   struct patient {
       string name;
       address id;
@@ -63,10 +62,33 @@ contract Healthblock {
     reportlist[report_count]=reports[_reporthash];
     report_count++;
   }
-  function getReports() public view returns (string [] memory){
+  function getReports() external  returns (string[] memory){
     return patients[msg.sender].reports;
   }
-  function grantAccess(uint _id,address  _docAddress) public {
-    reportlist[_id].doctors_assigned.push(_docAddress);
+  function grantAccess(uint _id,address  _docAddress) public returns(uint){
+    doctor memory d = doctors[_docAddress];
+    if (d.id > address(0x0)){
+      reportlist[_id].doctors_assigned.push(_docAddress);
+      return(1);
+    }
+    else{
+      return(0);
+    }
   }
-} 
+  function getReportDoctor() external returns(string[] memory,address[] memory){
+    string[] memory hashes;
+    address[] memory patient_address;
+    for (uint i=0;i<report_count;i++){
+      report memory rep = reportlist[i];
+      string[] memory doctorsAssigned =rep.doctors_assigned;
+      for (j=0;j<doctorsAssigned.length;j++){
+        if (doctorsAssigned[j]==msg.sender){
+          hashes.push(rep.report_hash);
+          patient_address.push(rep.owner);
+          break;
+        }
+      }
+    }
+    return (hashes,patient_address);
+  } 
+}

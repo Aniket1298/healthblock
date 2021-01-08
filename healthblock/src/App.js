@@ -93,9 +93,6 @@ class App extends Component {
         
         &nbsp;
         <div className="MainPageContent" >
-          
-              &nbsp;
-              
               <h3> Address {this.state.account}</h3>
 
               <div className="row">

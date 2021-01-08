@@ -56,9 +56,9 @@ class UploadPage extends Component{
       var account = obj.account
       this.setState({name:obj.user.name,role:obj.user.role,account:obj.account})
       const count = await contract.methods.report_count().call()
-      console.log("REPORT COUNT",count)
+      //console.log("REPORT COUNT",count)
       const files = await contract.methods.reportlist(0).call()
-      console.log("FILES and")
+      //console.log("FILES and")
       console.log(files)
       console.log(files.reports)
 
@@ -83,7 +83,7 @@ class UploadPage extends Component{
         console.log("Submitting file to IPFS...")
         console.log(contract)
         var account = obj.account
-        alert(account)
+        //alert(account)
         const file =await ipfs.add(this.state.buffer, (error, result) => {
           console.log('IPFS result', result)
           if(error) {
