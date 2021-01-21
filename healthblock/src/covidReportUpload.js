@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 const ipfsClient = require('ipfs-http-client')
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
 
-class UploadPage extends Component{
+class CovidReportUploadPage extends Component{
     constructor(props){
         super(props)
         this.state={
@@ -55,8 +55,13 @@ class UploadPage extends Component{
       const contract = obj.contract
       var account = obj.account
       this.setState({name:obj.user.name,role:obj.user.role,account:obj.account})
-      const count = await contract.methods.report_count().call()
-      
+      const count = await contract.methods.provider_report().call()
+      //console.log("REPORT COUNT",count)
+      //const files = await contract.methods.covid_report_list(0).call()
+      //console.log("FILES and")
+      //console.log(files)
+      //console.log(files.reports)
+
     }
     captureFile = event => {
         event.preventDefault()
@@ -69,7 +74,7 @@ class UploadPage extends Component{
           console.log('buffer', this.state.buffer)
         }
       }
-    async uploadReport (title,hash) {
+    async uploadReport (title) {
    
         const obj = new web3obj()
         await obj.loadWeb3()
@@ -86,12 +91,14 @@ class UploadPage extends Component{
             return
           }
       })
-      //console.log("HASH")
-      //console.log(title,hash)
-      await obj.upload(title,hash).then(
-        this.props.history.push("/")  
-      )
-      //this.props.history.push("/")
+      console.log(file)
+      console.log(file.path)
+      const hash= file.path
+      console.log(obj)
+      console.log(title,hash)
+      await obj.uploadCovidReport(title,hash)
+      
+      this.props.history.push("/")
       }
       render(){
           const classes = makeStyles()
@@ -115,7 +122,7 @@ class UploadPage extends Component{
               this.uploadReport(title)
             }} >
               &nbsp;
-              <input type='file' accept=".jpg,.pdf,.png,.jpg,.jpeg" onChange={this.captureFile} style={{ width: '250px' }} />
+              <input type='file' accept=".csv" onChange={this.captureFile} style={{ width: '250px' }} />
                 <div className="form-group mr-sm-2">
                   <input
                     id="videoTitle"
@@ -135,4 +142,4 @@ class UploadPage extends Component{
       }
     
 }
-export default withRouter(UploadPage);
+export default withRouter(CovidReportUploadPage);

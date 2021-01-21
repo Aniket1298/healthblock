@@ -46,15 +46,19 @@ class RegisterPage extends Component{
     }
     roleChange(event){
         this.setState({role:event.target.value})
-        console.log(this.state.role,event.target.value) 
+        //console.log(this.state.role,event.target.value) 
     }
     async handleSubmit(event){
         //await web3obj.register(this.state.name,this.state.role)
         const obj = this.props.location.obj
         //alert(obj.account)
-        obj.register(this.state.name,this.state.role)
+        //alert(this.state.name,this.state.role)
+        await obj.register(this.state.name,this.state.role).then(
+          this.props.history.push('/')
+
+        )
         this.props.history.push('/')
-        }
+      }
     
     render(){
         const classes = makeStyles()
@@ -82,7 +86,7 @@ class RegisterPage extends Component{
                         <select onChange={this.roleChange}>
                         <option value="Patient">Patient</option>
                             <option value="Doctor">Doctor</option>
-                            
+                            <option value="Provider">Provider</option>
                         </select>
                         {"         "}
                         <input type="submit" value="Submit" />

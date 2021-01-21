@@ -1,16 +1,18 @@
+import { useHistory } from "react-router-dom";
+import { withRouter } from 'react-router';
+import React, { Component } from 'react'
+import {Form} from 'react-bootstrap'
+import web3obj from './healthblock'
+
+
 import logo from './logo.svg';
 import './App.css'
 import Healthblock from './build/contracts/Healthblock.json'
 import Web3 from 'web3'
 
-import React, { Component } from 'react'
-import { useHistory } from "react-router-dom";
-import { withRouter } from 'react-router';
-import web3obj from './healthblock'
 import RegisterPage from './register'
 import UploadPage from './upload'
 import "./App.css"
-
 
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -34,9 +36,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-class App extends Component {
+class ProviderPage extends Component {
   async componentDidMount() {
-    
     const obj = new web3obj()
     await obj.loadWeb3()
     await obj.loadBlockchainData()
@@ -46,9 +47,7 @@ class App extends Component {
     this.setState({ account: obj.account })
     this.setState({user:obj.user.name})
     this.setState({role:obj.user.role})
-    if (this.state.role=="provider" || this.state.role=="Provider"){
-      this.props.history.push({pathname:'/provider'})
-    }
+    
     } 
     else{
       this.props.history.push({pathname:'/register',obj:this.obj})
@@ -65,7 +64,7 @@ class App extends Component {
     this.obj=null;
   }
   onUpload(event){
-    this.props.history.push({pathname:'/covidupload',obj:this.obj})
+    this.props.history.push({pathname:'/upload',obj:this.obj})
 
   }
 
@@ -98,8 +97,8 @@ class App extends Component {
               <h3> Address {this.state.account}</h3>
 
               <div className="row">
-              <Button  onClick={()=> this.props.history.push({pathname:'/upload',obj:this.obj})} variant="contained" color="primary" >
-                Upload Report
+              <Button  onClick={()=> this.props.history.push({pathname:'/covidupload',obj:this.obj})} variant="contained" color="primary" >
+                Upload Covid Reports
               </Button>
               &nbsp;
               &nbsp;
@@ -107,7 +106,7 @@ class App extends Component {
               &nbsp;
               &nbsp;
               
-              <Button onClick={()=> this.props.history.push({pathname:'/reports',obj:this.obj})} variant="contained" color="primary">
+              <Button onClick={()=> this.props.history.push({pathname:'/covidreports',obj:this.obj})} variant="contained" color="primary">
                 Reports
               </Button>
               </div>
@@ -119,4 +118,4 @@ class App extends Component {
     );
   }
 }
-export default withRouter(App);
+export default withRouter(ProviderPage);
