@@ -28,19 +28,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-const ipfsClient = require('ipfs-http-client')
-const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
-
-class UploadPage extends Component{
-      render(){
-          const classes = makeStyles
-          return(
-            <div>
-              <h1>dsgfsdgadsf</h1>
-            </div>
-          );
-      }
-    
+class GrantAcces extends React.Component{
+    constructor(props){
+        super(props)
+        this.state={
+            report_name:null,
+            buffer:null,
+            name:null,
+            role:null,
+            account:null,
+        }
+        
+        this.uploadReport=this.uploadReport.bind(this)
+        this.captureFile = this.captureFile.bind(this)
+        this.setData= this.setData  .bind(this)
+        this.setData()
+    }
+    async setData(){
+      const obj = new web3obj()
+      await obj.loadWeb3()
+      await obj.loadBlockchainData()
+      const contract = obj.contract
+      var account = obj.account
+      this.setState({name:obj.user.name,role:obj.user.role,account:obj.account})
+    }    
 }
-export default withRouter(UploadPage);

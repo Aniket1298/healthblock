@@ -6,8 +6,8 @@ import React, { Component } from 'react'
 import web3obj from './healthblock'
 import {Form} from 'react-bootstrap'
 import web3obj from './healthblock'
+import Navbar from './navbar'
 class PatientPage extends Component{
-
     constructor(props){
         super(props)
         this.state={

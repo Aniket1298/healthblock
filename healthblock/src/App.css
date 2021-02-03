@@ -6,13 +6,6 @@
   height: 40vmin;
   pointer-events: none;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -70,7 +63,7 @@
 /* The typewriter cursor effect */
 @keyframes blink-caret {
   from, to { border-color: transparent }
-  50% { border-color: orange; }
+  50% { border-color: grey; }
 }
 
 .MainPageContent {
@@ -88,6 +81,11 @@
   font-stretch: wider;
   color: teal;
 }
+.Header{
+  align-content: center;
+  text-align: center;
+  align-items: center;
+}
 .MainPageContent h3{
   text-align: center;
   font-variant: inherit;
@@ -97,9 +95,16 @@
   color:grey;
 }
 .UploadSection {
-  text-align: center;
+  justify-content: center;
   align-items: center;
+  display: inline-block;
   align-content: center;
+  align-items: center;
+  margin-left: 0%  ;
+}
+.FormSection {
+
+  display: inline-block;
 }
 .UploadSection h3{
   text-transform: capitalize;
@@ -109,4 +114,12 @@
   font-weight: bold;
   font-stretch: wider;
   color: teal;
+}
+.Main{
+  background:linear-gradient(#C9D6FF,#E2E2E2);
+  width:100% ;
+  height:1000px;
+}
+.PresPage{
+  align:center,
 }

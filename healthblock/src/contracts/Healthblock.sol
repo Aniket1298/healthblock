@@ -6,15 +6,17 @@ contract Healthblock {
   uint public number=0;
   uint public report_count=0;
   uint public provider_report=0;
+  uint public presCount=0;
   mapping (address => doctor)  public doctors;
   mapping (address => patient) public patients;
   mapping (address =>provider) public providers;
+  mapping (string => prescription) public presmap;
   mapping (string => report) public reports; 
   mapping (string => covid_report) public covid_reports;
   mapping (uint => covid_report) public covid_report_list;
   mapping (uint=>report) public reportlist;
   mapping (address =>report) public doctoReport;
-  
+  mapping (uint=>prescription) public presList;
   string public name = "Healthblock";
   struct report {
       uint id;
@@ -33,6 +35,7 @@ contract Healthblock {
       string name;
       address id; 
       string[] reports;
+      string [] pres_hashes;
   }
   struct provider{
     string name;
@@ -43,25 +46,41 @@ contract Healthblock {
       string name;
       address id;
       string[] reports_hash;
+      string [] prescriptions;
+  }
+  struct prescription{
+    string pres_hash;
+    address owner;
+    address patient_to; 
   }
   constructor() public {
     owner = msg.sender;
   }
+  report[] public Reports;  
   function register(string memory _name, uint8 member) public returns(string memory,string memory){
     if (member==0){
         patient memory p = patients[msg.sender];
         require(!(p.id > address(0x0)));
-        patients[msg.sender] = patient({name:_name,id:msg.sender,reports:new string[](100)});   
+        patient memory pat;
+        pat.name=_name;
+        pat.id=msg.sender;
+        patients[msg.sender] = pat;  
         return (_name,"patient");
         }
     else if (member==1){
-      doctors[msg.sender] = doctor({name:_name,id:msg.sender,reports_hash:new string[](100)});
+      doctor memory doc;
+      doc.name=_name;
+      doc.id=msg.sender;
+      doctors[msg.sender] = doc;
       return (_name,"doctor");
       }
     else if (member==2){
-      providers[msg.sender]=provider({name:_name,id:msg.sender,reports:new string[](0)});
+      provider memory pro;
+      pro.name=_name;
+      pro.id=msg.sender;
+      providers[msg.sender]=pro;
       return (_name,"provider");
-    }
+      }
     }   
   function getProfile(address _user) public view  returns(string memory, string memory){
       patient memory p = patients[_user];
@@ -81,47 +100,59 @@ contract Healthblock {
     providers[msg.sender].reports.push(_reporthash);
     covid_report_list[provider_report]=covid_reports[_reporthash];
     provider_report++;
-
   }
   function uploadReport(string memory _name,string memory _reporthash) public {
-    reports[_reporthash ]=report({id:report_count,name:_name,report_hash:_reporthash,owner:msg.sender,doctors_assigned:new address[](0)});
+    report memory rep;
+    rep.id=report_count;
+    rep.name=_name;
+    rep.owner=msg.sender;
+    rep.report_hash=_reporthash;
+    reports[_reporthash ]=rep;
+    Reports.push(rep);
     patients[msg.sender].reports.push(_reporthash);
     reportlist[report_count]=reports[_reporthash];
     report_count++;
   }
-  function getReports() external  returns (string[] memory){
+  function getReps() public view returns (report[] memory){
+    return(Reports);
+  }
+  function getPatData(address _user) public view returns(patient memory){
+    return(patients[_user]);
+  }
+  function getDocData(address _user) public view returns(doctor memory){
+    return(doctors[_user]);
+  }
+  function getReports()  public view   returns (string[] memory){
     return patients[msg.sender].reports;
   }
-  function grantAccess(uint _id,address  _docAddress) public returns(uint){
+  function grantAccess(string memory _hash,address  _docAddress) public returns(uint){
     doctor memory d = doctors[_docAddress];
-    
+    report memory rep= reports[_hash];
     if (d.id > address(0x0)){
-      reportlist[_id].doctors_assigned.push(_docAddress);
-      doctors[_docAddress].reports_hash.push(reportlist[_id].report_hash);
-      //d.reports_hash.push(reportlist[_id]);
+      reports[_hash].doctors_assigned.push(_docAddress);
+      doctors[_docAddress].reports_hash.push(_hash);
       return(1);
     }
     else{
       return(0);
     }
   }
-  function getReportDoctor() external returns(string[] memory){
-    return doctors[msg.sender].reports_hash;
+  function getReportDoctor(address _user) public view returns(string[] memory){
+    return doctors[_user].reports_hash;
   }
-  /*function getReportDoctor() external returns(string[] memory,address[] memory){
-    string[] memory hashes;
-    address[]  memory patient_address;
-    for (uint i=0;i<report_count;i++){
-      report memory rep = reportlist[i];
-      string[] memory doctorsAssigned =rep.doctors_assigned;
-      for (uint j=0;j<doctorsAssigned.length;j++){
-        if (doctorsAssigned[j]==msg.sender){
-          hashes.push(rep.report_hash);
-          patient_address.push(rep.owner);
-          break;
-        }
-      }
-    }
-    return (hashes,patient_address);
-  } */
+  function uploadPres(string memory _hash,address _patient_address,address _user) public{
+    prescription memory pres;
+    pres.owner=_user;
+    pres.patient_to=_patient_address;
+    pres.pres_hash=_hash;
+    presmap[_hash]=pres;
+    doctors[_user].prescriptions.push(_hash);
+    patients[_patient_address].pres_hashes.push(_hash);
+  }
+  function getpres(address _user)public view returns (string[] memory){
+    return (patients[_user].pres_hashes);
+  }
+  function getAllPres(address _user) public view returns(string[] memory){
+    return(doctors[_user].prescriptions);
+  }
 }

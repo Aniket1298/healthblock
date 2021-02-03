@@ -2,7 +2,6 @@ import logo from './logo.svg';
 import './App.css'
 import Healthblock from './build/contracts/Healthblock.json'
 import Web3 from 'web3'
-
 import React, { Component } from 'react'
 import { useHistory } from "react-router-dom";
 import { withRouter } from 'react-router';
@@ -10,8 +9,6 @@ import web3obj from './healthblock'
 import RegisterPage from './register'
 import UploadPage from './upload'
 import "./App.css"
-
-
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -19,8 +16,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-
-
+import Navbar from './navbar'
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -34,28 +30,22 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-class App extends Component {
+class DoctorPage extends Component {
   async componentDidMount() {
     
     const obj = new web3obj()
     await obj.loadWeb3()
     await obj.loadBlockchainData()
-    var something=await obj.contract.methods.getPatData(obj.account).call()
-    console.log("THIS is Pat'sdata",something)
-    var some = await obj.contract.methods.getReps().call()
-    console.log("THIS is Rep'sdata",some)
     this.obj=obj
+    var something=await obj.contract.methods.getDocData(obj.account).call()
+    console.log("THIS is doc'sdata",something)
     if (obj.user){ 
-      console.log("AACCCUNT",obj.account,"Name",obj.user.name)
-    this.setState({ account: obj.account })
-    this.setState({user:obj.user.name})
-    this.setState({role:obj.user.role})
-    if (this.state.role=="provider" || this.state.role=="Provider"){
-      this.props.history.push({pathname:'/provider'})
-    }
-    if (this.state.role=="doctor" || this.state.role=="Doctor"){
-      this.props.history.push({pathname:'/doctor'})
-    }
+        this.setState({ account: obj.account })
+        this.setState({user:obj.user.name})
+        this.setState({role:obj.user.role})
+        if (this.state.role=="provider" || this.state.role=="Provider"){
+            this.props.history.push({pathname:'/provider'})
+        }
     } 
     else{
       this.props.history.push({pathname:'/register',obj:this.obj})
@@ -71,25 +61,12 @@ class App extends Component {
     }
     this.obj=null;
   }
-  onUpload(event){
-    this.props.history.push({pathname:'/covidupload',obj:this.obj})
-
-  }
 
   render() {
     const  classes  = useStyles
     return (
-      <div className="HomePage" style={{  background:"linear-gradient(#C9D6FF,#E2E2E2)", width:"100%" ,height:"1000px",backgroundSize:"cover",backgroundPosition:"center",backgroundRepeat:"no-repeat"}}>
-        <div className={classes.root}>
-                  <AppBar position="static">
-                    <Toolbar>
-                      <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-                        <MenuIcon />
-                      </IconButton>
-                      <Button onClick={()=> this.props.history.push({pathname:'/',obj:this.obj})} color="inherit"> <h3>Healthblock</h3>   </Button>
-                    </Toolbar>
-                  </AppBar>
-                </div>
+      <div className="Main">
+        <Navbar/>
         <div class="typewriter">
           <h1>Securing HealthCare Data.</h1>
         </div>
@@ -102,16 +79,17 @@ class App extends Component {
         &nbsp;
         <div className="MainPageContent" >
               <h3> Address {this.state.account}</h3>
+
               <div className="row">
-              <Button  onClick={()=> this.props.history.push({pathname:'/uploadreport',obj:this.obj})} variant="contained" color="primary" >
-                Upload Report
+              <Button  onClick={()=> this.props.history.push({pathname:'/uploadpres',obj:this.obj})} variant="contained" color="primary" >
+                Upload Prescription
               </Button>
               &nbsp;
               &nbsp;
               &nbsp;
-              &nbsp;
-              &nbsp;
-              <Button onClick={()=> this.props.history.push({pathname:'/reports',obj:this.obj})} variant="contained" color="primary">
+              &nbsp;    
+              &nbsp;    
+              <Button onClick={()=> this.props.history.push({pathname:'/dreports',obj:this.obj})} variant="contained" color="primary">
                 Reports
               </Button>
               &nbsp;
@@ -130,4 +108,4 @@ class App extends Component {
     );
   }
 }
-export default withRouter(App);
+export default withRouter(DoctorPage);
