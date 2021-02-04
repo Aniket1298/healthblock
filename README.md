@@ -1,5 +1,6 @@
 # Healthblock
 ## HealthRecord Storing and sharing using Blockchain
+## Tech stack Used Solidity,Ethureum,Reactjs,Web3js
 ### How to run the project
 ### Prerequites
 ### 1.Install ganache
@@ -20,3 +21,6 @@ npm start
 ### Role Based Authentication i.e. Doctor and Patient
 ### Uploading of Report to ipfs and storing it's hash in blockchain
 ### Rendering Uploaded Reports of patient
+### Grant Report Access to  Doctor
+### Upload Prescription by Doctor to Patient
+
