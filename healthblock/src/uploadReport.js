@@ -91,9 +91,12 @@ class UploadReportPage extends Component{
           }
       })
       var hash=file.path
+      var t1=performance.now()
       await obj.upload(this.state.title,hash).then(
         this.props.history.push("/")  
       )
+      
+      console.log("Time to Upload",performance.now()-t1)
       }
       render(){
           const classes = useStyles
@@ -109,7 +112,7 @@ class UploadReportPage extends Component{
                           <TextField value={this.state.title} id="standard-basic" label="Report Name" onChange={this.handleTitle}/>
                           <br/>
                           <br/>
-                          <input type='file' accept=".jpg,.pdf,.png,.jpg,.jpeg" onChange={this.captureFile} />         
+                          <input type='file' accept=".jpg,.pdf,.png,.jpg,.jpeg,.csv" onChange={this.captureFile} />         
                       </form>
                       <br/>
                       <Button variant="contained" size="small" color="primary" className={classes.margin} onClick={this.uploadReport}>

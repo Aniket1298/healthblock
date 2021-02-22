@@ -9,6 +9,7 @@ import CardContent from '@material-ui/core/CardContent';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    minWidth:300,
   },
   paper: {
     padding: theme.spacing(2),
@@ -27,7 +28,7 @@ export default function CenteredGrid(index,name,url) {
         
         <Paper className={classes.paper} elevation={3}>
           <Typography variant="h5" component="h2">
-          {index}. {name}    <a href={"https://ipfs.infura.io/ipfs/"+url} target="_blank">link</a>
+          {index}. {name}
           </Typography>
           <Typography className={classes.pos} color="textSecondary">
             Hash {url}

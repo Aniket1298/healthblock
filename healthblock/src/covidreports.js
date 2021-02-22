@@ -15,6 +15,8 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import CenteredGrid from './components'
+import Navbar from './navbar'
+import MuiAlert from '@material-ui/lab/Alert';
 
 function ReportCount(props){
   if (props.count==0){
@@ -81,11 +83,13 @@ class CovidReportsPage extends Component{
       var file = null
       var arr=[]
       for (let i=0;i<report_count;i++){
+        var t1=performance.now()
         file = await contract.methods.covid_report_list(i).call()
+        console.log("Retrieval Time",performance.now()-t1)
         //alert(file.report_hash)
         if (file.owner==this.state.account){
             this.state.user_reports+=1
-            arr.push([file.name,"https://ipfs.infura.io/ipfs/"+file.report_hash])
+            arr.push([file.name,file.report_hash])
         }
       }
       this.setState({hashes:arr})
@@ -118,21 +122,14 @@ class CovidReportsPage extends Component{
         return(
             <div className="ReportsPage" style={{ background:"linear-gradient(#C9D6FF,#E2E2E2)", width:"100%" ,height:"1000px"}}>
                 <div className={classes.root}>
-                  <AppBar position="static">
-                    <Toolbar>
-                      <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-                        <MenuIcon />
-                      </IconButton>
-                      <Button onClick={()=> this.props.history.push({pathname:'/',obj:this.obj})} color="inherit"><h3>Healthblock</h3></Button>
-                    </Toolbar>
-                  </AppBar>
+                 <Navbar/>
                 </div>
                 <div className="Header">
                       
                       <h1>
-                        {this.state.name},Your  reports
+                        {this.state.name},Your  Datasets
                       </h1>
-                      <ReportCount count ={this.state.user_reports}/>
+                      
                       &nbsp;
                 </div>
                 <div style={{ marginLeft:"34%"}}>

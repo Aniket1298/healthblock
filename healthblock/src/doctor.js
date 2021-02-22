@@ -37,7 +37,9 @@ class DoctorPage extends Component {
     await obj.loadWeb3()
     await obj.loadBlockchainData()
     this.obj=obj
+    var t1=performance.now()
     var something=await obj.contract.methods.getDocData(obj.account).call()
+    console.log("Time to get User data",performance.now()-t1)
     console.log("THIS is doc'sdata",something)
     if (obj.user){ 
         this.setState({ account: obj.account })

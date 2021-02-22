@@ -7,14 +7,22 @@ import {Form} from 'react-bootstrap'
 import web3obj from './healthblock'
 
 
-import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
+
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import CenteredGrid from './components'
+import Card from '@material-ui/core/Card';
+
+import CardContent from '@material-ui/core/CardContent';
+
+import TextField from '@material-ui/core/TextField';
+
+import { makeStyles } from '@material-ui/core/styles';
+import Navbar from './navbar'
+import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,11 +49,13 @@ class CovidReportUploadPage extends Component{
             name:null,
             role:null,
             account:null,
+            title:null,
         }
         
         this.uploadReport=this.uploadReport.bind(this)
         this.captureFile = this.captureFile.bind(this)
         this.setData= this.setData  .bind(this)
+        this.handleTitle=this.handleTitle.bind(this)
         this.setData()
     }
     async setData(){
@@ -74,9 +84,12 @@ class CovidReportUploadPage extends Component{
           console.log('buffer', this.state.buffer)
         }
       }
-    async uploadReport (title) {
-   
-        const obj = new web3obj()
+    handleTitle(event){
+      this.setState({title:event.target.value})
+    }  
+    async uploadReport () {
+        if (this.state.title){
+          const obj = new web3obj()
         await obj.loadWeb3()
         await obj.loadBlockchainData()
         const contract = obj.contract
@@ -91,52 +104,41 @@ class CovidReportUploadPage extends Component{
             return
           }
       })
-      console.log(file)
-      console.log(file.path)
       const hash= file.path
-      console.log(obj)
-      console.log(title,hash)
-      await obj.uploadCovidReport(title,hash)
-      
-      this.props.history.push("/")
+      //alert(this.state.title+" "+hash)
+      var t1=performance.now()
+      await obj.uploadCovidReport(this.state.title,hash)
+      console.log("Time taken to upload",performance.now()-t1)
+      this.props.history.push("/provider")
+
+        }
+        else{alert("Title Can't be empty")}
+        
       }
       render(){
           const classes = makeStyles()
           return(
-          <div className="uploadReport" style={{ background:"linear-gradient(#C9D6FF,#E2E2E2)", width:"100%" ,height:"1000px"}}>
-            <div className={classes.root}>
-                  <AppBar position="static">
-                    <Toolbar>
-                      <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-                        <MenuIcon />
-                      </IconButton>
-                      <Button onClick={()=> this.props.history.push({pathname:'/',obj:this.obj})} color="inherit"><h3>Healthblock</h3></Button>
-                    </Toolbar>
-                  </AppBar>
-              </div>
-            <div className="UploadSection">
-              <h3>Upload Report  </h3>
-            <form onSubmit={(event) => {
-              event.preventDefault()
-              const title = this.report_name.value
-              this.uploadReport(title)
-            }} >
-              &nbsp;
-              <input type='file' accept=".csv" onChange={this.captureFile} style={{ width: '250px' }} />
-                <div className="form-group mr-sm-2">
-                  <input
-                    id="videoTitle"
-                    type="text"
-                    ref={(input) => { this.report_name = input }} 
-                    className="form-control-sm"
-                    placeholder="Title..."
-                    required />
-                </div>
-              <button type="submit" className="btn btn-danger btn-block btn-sm">Upload!</button>
-              &nbsp;
-            </form>
+            <div className="Main">
+            <Navbar/>
+            <div className="Header">
+            <h1>Upload Report  </h1>
+            <div className="FormSection">
+              <Card className={classes.root}>
+                  <CardContent>
+                      <form >
+                          <TextField value={this.state.title} id="standard-basic" label="Report Name" onChange={this.handleTitle}/>
+                          <br/>
+                          <br/>
+                          <input type='file' accept=".pdf,.csv,.xlsx,.zip" onChange={this.captureFile} />         
+                      </form>
+                      <br/>
+                      <Button variant="contained" size="small" color="primary" className={classes.margin} onClick={this.uploadReport}>
+                      submit
+                      </Button>
+                  </CardContent>
+              </Card>
             </div>
-            
+            </div>
               </div>
           );
       }
