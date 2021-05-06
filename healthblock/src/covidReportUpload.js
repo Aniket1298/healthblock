@@ -6,14 +6,6 @@ import { withRouter } from 'react-router';
 import {Form} from 'react-bootstrap'
 import web3obj from './healthblock'
 
-
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import CenteredGrid from './components'
 import Card from '@material-ui/core/Card';
 
 import CardContent from '@material-ui/core/CardContent';
@@ -66,11 +58,6 @@ class CovidReportUploadPage extends Component{
       var account = obj.account
       this.setState({name:obj.user.name,role:obj.user.role,account:obj.account})
       const count = await contract.methods.provider_report().call()
-      //console.log("REPORT COUNT",count)
-      //const files = await contract.methods.covid_report_list(0).call()
-      //console.log("FILES and")
-      //console.log(files)
-      //console.log(files.reports)
 
     }
     captureFile = event => {
@@ -105,7 +92,7 @@ class CovidReportUploadPage extends Component{
           }
       })
       const hash= file.path
-      //alert(this.state.title+" "+hash)
+      
       var t1=performance.now()
       await obj.uploadCovidReport(this.state.title,hash)
       console.log("Time taken to upload",performance.now()-t1)

@@ -95,12 +95,14 @@ class ReportsPage extends Component{
       const report_count =  await contract.methods.report_count().call()
       console.log("REPORTS",report_count)
       var file = null
+      var t1=performance.now()
       for (let i=0;i<report_count;i++){
         file = await contract.methods.reportlist(i).call()
         if (file.owner==this.state.account){
             this.state.hashes.push([file.name,file.report_hash])
         }
       }
+      console.log("Retrieval time",performance.now()-t1)
       console.log("hashes",this.state.hashes)
     }
     render(){

@@ -39,8 +39,8 @@ class DoctorPage extends Component {
     this.obj=obj
     var t1=performance.now()
     var something=await obj.contract.methods.getDocData(obj.account).call()
-    console.log("Time to get User data",performance.now()-t1)
-    console.log("THIS is doc'sdata",something)
+    //console.log("Time to get User data",performance.now()-t1)
+    //console.log("THIS is doc'sdata",something)
     if (obj.user){ 
         this.setState({ account: obj.account })
         this.setState({user:obj.user.name})
